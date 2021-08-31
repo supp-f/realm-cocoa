@@ -111,14 +111,27 @@ public protocol ThreadConfined {
              constructor.
      */
     public init(to threadConfined: Confined) {
-        let bridged = (threadConfined as! AssistedObjectiveCBridgeable).bridged
+        let bridged: (objectiveCValue: Any, metadata: Any?)
+        if let projection = threadConfined as? _Projection {
+            bridged = projection.bridged
+        } else {
+            bridged = (threadConfined as! AssistedObjectiveCBridgeable).bridged
+        }
         swiftMetadata = bridged.metadata
         objectiveCReference = RLMThreadSafeReference(threadConfined: bridged.objectiveCValue as! RLMThreadConfined)
     }
 
     internal func resolve(in realm: Realm) -> Confined? {
         guard let objectiveCValue = realm.rlmRealm.__resolve(objectiveCReference) else { return nil }
-        return ((Confined.self as! AssistedObjectiveCBridgeable.Type).bridging(from: objectiveCValue, with: swiftMetadata) as! Confined)
+        if Confined.self is _Projection.Type {
+            // Resolve as ObjectBase instead of Projection<ObjectBase>
+            #warning("Should bridge objectiveCValue and pass it to Projection class to instantiate projection")
+            let bridgedValue = ((Confined.self as! AssistedObjectiveCBridgeable.Type).bridging(from: objectiveCValue, with: swiftMetadata) as! Confined)
+            return ((Confined.self as! _Projection.Type).bridging(from: bridgedValue, with: swiftMetadata) as! Confined)
+        } else {
+            return ((Confined.self as! AssistedObjectiveCBridgeable.Type).bridging(from: objectiveCValue, with: swiftMetadata) as! Confined)
+        }
+//        return ((Confined.self as! AssistedObjectiveCBridgeable.Type).bridging(from: objectiveCValue, with: swiftMetadata) as! Confined)
     }
 }
 
