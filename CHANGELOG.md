@@ -1,10 +1,9 @@
 x.y.z Release notes (yyyy-MM-dd)
 =============================================================
 ### Enhancements
-
-* Add `async` versions for `EmailPasswordAuth.callResetPasswordFunction` and `User.linkUser` methods.
-* Add `async` version for `MongoCollection` methods.
-* Add `async` support for user functions.
+* Add a new `@ThreadSafe` property wrapper. Objects and collections wrapped by `@ThreadSafe` may be passed between threads. It's
+  intended to allow local variables and function parameters to be used across
+  threads when needed.
 
 ### Fixed
 * <How to hit and notice issue? what was the impact?> ([#????](https://github.com/realm/realm-cocoa/issues/????), since v?.?.?)
@@ -21,6 +20,32 @@ x.y.z Release notes (yyyy-MM-dd)
 
 ### Internal
 * Upgraded realm-core from ? to ?
+
+10.16.0 Release notes (2021-09-29)
+=============================================================
+
+### Enhancements
+
+* Add `async` versions of `EmailPasswordAuth.callResetPasswordFunction` and
+r `User.linkUser` methods.
+* Add `async` version of `MongoCollection` methods.
+* Add `async` support for user functions.
+
+### Fixed
+
+* A race condition in Realm.asyncOpen() sometimes resulted in subsequent writes
+  from Realm Sync failing to produce notifications
+  ([#7447](https://github.com/realm/realm-cocoa/issues/7447),
+  [#7453](https://github.com/realm/realm-cocoa/issues/7453),
+  [Core #4909](https://github.com/realm/realm-core/issues/4909), since v10.15.0).
+
+### Compatibility
+
+* Realm Studio: 11.0.0 or later.
+* APIs are backwards compatible with all previous releases in the 10.x.y series.
+* Carthage release for Swift is built with Xcode 13.0.
+* CocoaPods: 1.10 or later.
+* Xcode: 12.2-13.0.
 
 10.15.1 Release notes (2021-09-15)
 =============================================================
