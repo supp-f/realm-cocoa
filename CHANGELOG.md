@@ -2,6 +2,8 @@ x.y.z Release notes (yyyy-MM-dd)
 =============================================================
 ### Enhancements
 * Add support for multi-user on `@AsyncOpen` and `@AutoOpen`.
+* Allow using Swift enums which conform to `PersistableEnum` as the value type
+  for all Realm collections.
 
 ### Fixed
 * Fix `@AsyncOpen` and `@AutoOpen` using `defaultConfiguration` by default if 
