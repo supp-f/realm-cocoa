@@ -64,13 +64,16 @@ static const int RLMEnumerationBufferSize = 16;
         _info = &info;
         _realm = _info->realm;
 
-        if (_realm.inWriteTransaction) {
+        bool isObject = backingCollection.get_type() == realm::PropertyType::Object;
+        if (isObject && _realm.inWriteTransaction) {
             _snapshot = backingCollection.as_results().snapshot();
         }
         else {
             _snapshot = backingCollection.as_results();
             _collection = collection;
-            [_realm registerEnumerator:self];
+            if (isObject) {
+                [_realm registerEnumerator:self];
+            }
         }
         _results = &_snapshot;
     }
@@ -84,15 +87,8 @@ static const int RLMEnumerationBufferSize = 16;
     if (self) {
         _info = &info;
         _realm = _info->realm;
-
-        if (_realm.inWriteTransaction) {
-            _snapshot = backingDictionary.get_keys().snapshot();
-        }
-        else {
-            _snapshot = backingDictionary.get_keys();
-            _collection = dictionary;
-            [_realm registerEnumerator:self];
-        }
+        _snapshot = backingDictionary.get_keys();
+        _collection = dictionary;
         _results = &_snapshot;
     }
     return self;
@@ -105,14 +101,17 @@ static const int RLMEnumerationBufferSize = 16;
     if (self) {
         _info = &info;
         _realm = _info->realm;
-        if (_realm.inWriteTransaction) {
+        bool isObject = results.get_type() == realm::PropertyType::Object;
+        if (isObject && _realm.inWriteTransaction) {
             _snapshot = results.snapshot();
             _results = &_snapshot;
         }
         else {
             _results = &results;
             _collection = collection;
-            [_realm registerEnumerator:self];
+            if (isObject) {
+                [_realm registerEnumerator:self];
+            }
         }
     }
     return self;

@@ -4,11 +4,39 @@ x.y.z Release notes (yyyy-MM-dd)
 * Add support for multi-user on `@AsyncOpen` and `@AutoOpen`.
 
 ### Fixed
-* Fix `@AsyncOpen` and `@AutoOpen` using `defaultConfiguration` by default if 
-  the user's doesn't provide one, will set an incorrect path which doesn't 
+* Fix `@AsyncOpen` and `@AutoOpen` using `defaultConfiguration` by default if
+  the user's doesn't provide one, will set an incorrect path which doesn't
   correspond to the users configuration one. (since v10.12.0)
-* Adding missing subscription completion for `AsyncOpenPublisher` after successfully 
+* Adding missing subscription completion for `AsyncOpenPublisher` after successfully
   returning a realm.
+* Decimal128 did not properly normalize the value before hashing and so could
+  have multiple values which are equal but had different hash values (since v10.8.0).
+* Fix a rare assertion failure or deadlock when a sync session is racing to
+  close at the same time that external reference to the Realm is being
+  released. ([Core #4931](https://github.com/realm/realm-core/issues/4931))
+* Fix a assertion failure when opening a sync Realm with a user who had been
+  removed. Instead an exception will be thrown. ([Core #4937](https://github.com/realm/realm-core/issues/4937), since v10.0.0)
+* Fixed a rare segfault which could trigger if a user was being logged out
+  while the access token refresh response comes in.
+  ([Core #4944](https://github.com/realm/realm-core/issues/4944), since v10.0.0)
+* Fixed a bug where progress notifiers on an AsyncOpenTask could be called
+  after the open completed. ([Core #4919](https://github.com/realm/realm-core/issues/4919))
+* SecureTransport was not enabled for macCatalyst builds when installing via
+  SPM, resulting in `'SSL/TLS protocol not supported'` exceptions when using
+  Realm Sync. ([#7474](https://github.com/realm/realm-cocoa/issues/7474))
+* Users were left in the logged in state when their refresh token expired.
+  ([Core #4882](https://github.com/realm/realm-core/issues/4882), since v10)
+* Calling `.count` on a distinct collection would return the total number of
+  objects in the collection rather than the distinct count the first time it is
+  called. ([#7481](https://github.com/realm/realm-cocoa/issues/7481), since v10.8.0).
+* `realm.delete(collection.distinct(...))` would delete all objects in the
+  collection rather than just the first object with each distinct value in the
+  property being distincted on, unless the distinct Results were read from at
+  least once first (since v10.8.0).
+* Calling `.distinct()` on a collection, accessing the Results, then passing
+  the Results to `realm.delete()` would delete the correct objects, but
+  afterwards report a count of zero even if there were still objects in the
+  Results (since v10.8.0).
 
 <!-- ### Breaking Changes - ONLY INCLUDE FOR NEW MAJOR version -->
 
@@ -20,7 +48,7 @@ x.y.z Release notes (yyyy-MM-dd)
 * Xcode: 12.2-13.0.
 
 ### Internal
-* Upgraded realm-core from ? to ?
+* Upgraded realm-core from v11.4.1 to v11.5.0
 
 10.17.0 Release notes (2021-10-06)
 =============================================================
